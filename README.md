@@ -1,4 +1,15 @@
-# Finsweet Developer Starter
+# Jan Kocián's Webflow Developer Starter
+
+## Improvements over the original Finsweet Developer Starter
+
+- Added support for SASS (results in `index.css` file)
+- We only publish the `dist` folder to npm to keep things clean (static files from `public` folder will be included in the npm package)
+- We automatically purge the jsDelivr cache after publishing to npm to keep the no-suffix, `@latest` and `@MAJOR_VERSION` tags always fresh
+
+<br>
+<br>
+
+# based on Finsweet Developer Starter
 
 A starter template for both Client & Power projects.
 
