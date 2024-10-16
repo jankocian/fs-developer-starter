@@ -19,7 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get package name and purge jsDelivr cache
+      - name: Get package info and purge jsDelivr cache
         run: |
           PACKAGE_NAME=$(jq -r .name package.json)
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          MAJOR_VERSION=$(echo $PACKAGE_VERSION | cut -d. -f1)
+          echo "Purging jsDelivr cache for ${PACKAGE_NAME}"
+          curl -X GET "https://purge.jsdelivr.net/npm/${PACKAGE_NAME}"
+          echo "Purging jsDelivr cache for ${PACKAGE_NAME}@latest"
           curl -X GET "https://purge.jsdelivr.net/npm/${PACKAGE_NAME}@latest"
+          echo "Purging jsDelivr cache for ${PACKAGE_NAME}@${MAJOR_VERSION}"
+          curl -X GET "https://purge.jsdelivr.net/npm/${PACKAGE_NAME}@${MAJOR_VERSION}"
