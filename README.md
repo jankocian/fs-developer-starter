@@ -6,6 +6,14 @@
 - We only publish the `dist` folder to npm to keep things clean (static files from `public` folder will be included in the npm package)
 - We automatically purge the jsDelivr cache after publishing to npm to keep the no-suffix, `@latest` and `@MAJOR_VERSION` tags always fresh
 
+# Up & running checklist
+- [ ] `git clone`, `pnpm i`
+- [ ] `package.json` – name, description, homepage, author, repository
+- [ ]  Github: `Settings > Secrets and variables > Actions > New repository secret` – name `NPM_TOKEN` & [here's how to get the token from NPM](https://docs.npmjs.com/creating-and-viewing-access-tokens)
+- [ ]  Github: `Settings > Actions > General > Workflow Permissions`
+  - ✅ Read and write permissions.
+  - ✅ Allow GitHub Actions to create and approve pull requests.
+
 <br>
 <br>
 
