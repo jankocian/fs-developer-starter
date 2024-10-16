@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild';
+import { sassPlugin } from 'esbuild-sass-plugin';
 import { readdirSync } from 'fs';
 import fs from 'fs/promises';
 import { copyFile, mkdir } from 'fs/promises';
@@ -118,7 +119,7 @@ const context = await esbuild.context({
   sourcemap: !PRODUCTION,
   target: PRODUCTION ? 'es2020' : 'esnext',
   inject: LIVE_RELOAD ? ['./bin/live-reload.js'] : undefined,
-  plugins: [generatePackageJsonPlugin(), copyReadmePlugin(), copyPublicPlugin()],
+  plugins: [sassPlugin(), generatePackageJsonPlugin(), copyReadmePlugin(), copyPublicPlugin()],
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
