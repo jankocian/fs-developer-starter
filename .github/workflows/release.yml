@@ -11,3 +11,15 @@ jobs:
     uses: finsweet/workflow-release/.github/workflows/release.yml@main
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  purge-jsdelivr-cache:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get package name and purge jsDelivr cache
+        run: |
+          PACKAGE_NAME=$(jq -r .name package.json)
+          curl -X GET "https://purge.jsdelivr.net/npm/${PACKAGE_NAME}@latest"
