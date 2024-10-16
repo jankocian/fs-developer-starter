@@ -8,7 +8,7 @@
 
 # Up & running checklist
 - [ ] `git clone`, `pnpm i`
-- [ ] `package.json` – name, description, homepage, author, repository
+- [ ] `package.json` – name (make sure it matches the NPM username), description, homepage, author, repository
 - [ ]  Github: `Settings > Secrets and variables > Actions > New repository secret` – name `NPM_TOKEN` & [here's how to get the token from NPM](https://docs.npmjs.com/creating-and-viewing-access-tokens)
 - [ ]  Github: `Settings > Actions > General > Workflow Permissions`
   - ✅ Read and write permissions.
