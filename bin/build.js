@@ -1,6 +1,7 @@
 import * as esbuild from 'esbuild';
 import { readdirSync } from 'fs';
 import fs from 'fs/promises';
+import { copyFile, mkdir } from 'fs/promises';
 import { join, sep } from 'path';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -70,6 +71,44 @@ const copyReadmePlugin = () => {
   };
 };
 
+// New plugin to copy public directory contents to dist
+const copyPublicPlugin = () => {
+  return {
+    name: 'copy-public-to-dist',
+    setup(build) {
+      build.onEnd(async () => {
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        const rootDir = path.resolve(__dirname, '..');
+        const publicDir = path.join(rootDir, 'public');
+        const distDir = path.join(rootDir, BUILD_DIRECTORY);
+
+        try {
+          const copyRecursive = async (src, dest) => {
+            const entries = await fs.readdir(src, { withFileTypes: true });
+            await mkdir(dest, { recursive: true });
+
+            for (let entry of entries) {
+              const srcPath = path.join(src, entry.name);
+              const destPath = path.join(dest, entry.name);
+
+              if (entry.isDirectory()) {
+                await copyRecursive(srcPath, destPath);
+              } else {
+                await copyFile(srcPath, destPath);
+              }
+            }
+          };
+
+          await copyRecursive(publicDir, distDir);
+          console.log('Public directory contents copied to dist directory');
+        } catch (error) {
+          console.error('Error copying public directory:', error);
+        }
+      });
+    },
+  };
+};
+
 // Create context
 const context = await esbuild.context({
   bundle: true,
@@ -79,7 +118,7 @@ const context = await esbuild.context({
   sourcemap: !PRODUCTION,
   target: PRODUCTION ? 'es2020' : 'esnext',
   inject: LIVE_RELOAD ? ['./bin/live-reload.js'] : undefined,
-  plugins: [generatePackageJsonPlugin(), copyReadmePlugin()],
+  plugins: [generatePackageJsonPlugin(), copyReadmePlugin(), copyPublicPlugin()],
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
