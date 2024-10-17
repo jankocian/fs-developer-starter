@@ -84,26 +84,36 @@ const copyPublicPlugin = () => {
         const distDir = path.join(rootDir, BUILD_DIRECTORY);
 
         try {
-          const copyRecursive = async (src, dest) => {
-            const entries = await fs.readdir(src, { withFileTypes: true });
-            await mkdir(dest, { recursive: true });
+          // Check if the public directory exists
+          const publicDirExists = await fs
+            .access(publicDir)
+            .then(() => true)
+            .catch(() => false);
 
-            for (let entry of entries) {
-              const srcPath = path.join(src, entry.name);
-              const destPath = path.join(dest, entry.name);
+          if (publicDirExists) {
+            const copyRecursive = async (src, dest) => {
+              const entries = await fs.readdir(src, { withFileTypes: true });
+              await mkdir(dest, { recursive: true });
 
-              if (entry.isDirectory()) {
-                await copyRecursive(srcPath, destPath);
-              } else {
-                await copyFile(srcPath, destPath);
+              for (let entry of entries) {
+                const srcPath = path.join(src, entry.name);
+                const destPath = path.join(dest, entry.name);
+
+                if (entry.isDirectory()) {
+                  await copyRecursive(srcPath, destPath);
+                } else {
+                  await copyFile(srcPath, destPath);
+                }
               }
-            }
-          };
+            };
 
-          await copyRecursive(publicDir, distDir);
-          console.log('Public directory contents copied to dist directory');
+            await copyRecursive(publicDir, distDir);
+            console.log('Public directory contents copied to dist directory');
+          } else {
+            console.log('Public directory does not exist. Skipping copy operation.');
+          }
         } catch (error) {
-          console.error('Error copying public directory:', error);
+          console.error('Error in copyPublicPlugin:', error);
         }
       });
     },
