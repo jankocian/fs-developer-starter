@@ -129,7 +129,11 @@ const context = await esbuild.context({
   sourcemap: !PRODUCTION,
   target: PRODUCTION ? 'es2020' : 'esnext',
   inject: LIVE_RELOAD ? ['./bin/live-reload.js'] : undefined,
-  plugins: [sassPlugin(), generatePackageJsonPlugin(), copyReadmePlugin(), copyPublicPlugin()],
+  plugins: [
+    sassPlugin(),
+    copyPublicPlugin(),
+    ...(PRODUCTION ? [generatePackageJsonPlugin(), copyReadmePlugin()] : []),
+  ],
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
